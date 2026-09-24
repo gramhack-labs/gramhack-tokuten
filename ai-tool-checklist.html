@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AIツールの選び方チェックリスト</title>
+<style>
+  :root {
+    --paper: #fffaf6;
+    --ink: #34172f;
+    --ink-soft: #7a5a71;
+    --line: #f1d9e4;
+    --pink: #ff59a0;
+    --magenta: #d81e8f;
+    --sky: #2fb8e0;
+    --pink-pale: #fce5ed;
+    --card: #ffffff;
+    --grad: linear-gradient(90deg, var(--pink) 0%, var(--magenta) 52%, var(--sky) 100%);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    overflow-x: hidden;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "Noto Sans JP", "Hiragino Sans", sans-serif;
+    line-height: 1.75;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3 {
+    font-family: "Zen Kaku Gothic New", "Hiragino Sans", sans-serif;
+    font-weight: 700;
+    text-wrap: balance;
+    margin: 0;
+    color: var(--ink);
+  }
+
+  .page { position: relative; padding: 40px 16px 72px; }
+
+  .deco {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(2px);
+    pointer-events: none;
+    opacity: 0.3;
+  }
+  .deco-a { width: 300px; height: 300px; top: -140px; left: -120px; background: radial-gradient(circle at 30% 30%, var(--sky), transparent 70%); }
+  .deco-b { width: 280px; height: 280px; bottom: -120px; right: -100px; background: radial-gradient(circle at 70% 70%, var(--pink), transparent 70%); }
+
+  .wrap { max-width: 600px; margin: 0 auto; display: flex; flex-direction: column; gap: 18px; position: relative; }
+
+  .eyebrow {
+    display: inline-flex;
+    align-self: flex-start;
+    padding: 6px 14px;
+    border-radius: 999px;
+    background: var(--pink-pale);
+    color: var(--magenta);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+  }
+
+  header.hero {
+    background: var(--card);
+    border-radius: 28px;
+    box-shadow: 0 18px 48px -28px rgba(52, 23, 47, 0.28);
+    padding: 32px clamp(18px, 5vw, 36px) 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  h1 { font-size: clamp(24px, 6vw, 30px); }
+  .subtitle {
+    color: var(--magenta);
+    font-weight: 700;
+    font-size: 14px;
+    margin: -4px 0 0;
+    word-break: keep-all;
+  }
+  .lead { color: var(--ink-soft); font-size: 14px; margin: 0; max-width: 46ch; word-break: keep-all; overflow-wrap: anywhere; }
+
+  .pills { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+  .pill { font-size: 12px; font-weight: 700; color: var(--magenta); background: var(--pink-pale); border-radius: 999px; padding: 6px 12px; }
+
+  .progress-card {
+    background: var(--card);
+    border-radius: 20px;
+    box-shadow: 0 14px 34px -22px rgba(52, 23, 47, 0.3);
+    padding: 16px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .progress-top { display: flex; align-items: baseline; justify-content: space-between; }
+  .progress-label { font-size: 12px; font-weight: 700; color: var(--ink-soft); letter-spacing: 0.04em; }
+  .progress-count { font-family: "Zen Kaku Gothic New", sans-serif; font-weight: 700; font-size: 22px; color: var(--magenta); font-variant-numeric: tabular-nums; }
+  .progress-count span { font-size: 13px; color: var(--ink-soft); }
+  .progress-track { height: 10px; border-radius: 999px; background: var(--pink-pale); overflow: hidden; }
+  .progress-fill { height: 100%; border-radius: 999px; background: var(--grad); transition: width 0.3s ease; }
+  .progress-msg { font-size: 12.5px; color: var(--ink-soft); margin: 0; }
+  .progress-msg.is-complete { color: var(--magenta); font-weight: 700; }
+
+  .list { display: flex; flex-direction: column; gap: 12px; }
+
+  .check-item {
+    appearance: none;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+    background: var(--card);
+    border: 1.5px solid var(--line);
+    border-radius: 18px;
+    padding: 16px 18px;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    box-shadow: 0 14px 30px -26px rgba(52, 23, 47, 0.3);
+    transition: border-color 0.15s ease, background 0.15s ease;
+  }
+  .check-item:hover { border-color: var(--pink); }
+  .check-item.is-checked { border-color: transparent; background: var(--pink-pale); }
+
+  .check-circle {
+    flex: none;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 2px solid var(--line);
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    color: transparent;
+    margin-top: 1px;
+  }
+  .check-item.is-checked .check-circle {
+    background: var(--grad);
+    border-color: transparent;
+    color: #fff;
+  }
+
+  .check-num {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--magenta);
+    letter-spacing: 0.06em;
+    margin: 0 0 2px;
+  }
+  .check-title { font-family: "Zen Kaku Gothic New", sans-serif; font-weight: 700; font-size: 15.5px; margin: 0 0 4px; }
+  .check-desc { font-size: 13px; color: var(--ink-soft); margin: 0; }
+
+  .actions-row { display: flex; gap: 10px; flex-wrap: wrap; }
+  .btn-primary {
+    appearance: none;
+    border: none;
+    cursor: pointer;
+    padding: 14px 22px;
+    border-radius: 999px;
+    background: var(--grad);
+    color: #fff;
+    font-family: "Zen Kaku Gothic New", sans-serif;
+    font-weight: 700;
+    font-size: 14.5px;
+    box-shadow: 0 12px 24px -12px rgba(216, 30, 143, 0.5);
+  }
+  .btn-secondary {
+    appearance: none;
+    cursor: pointer;
+    padding: 12px 20px;
+    border-radius: 999px;
+    background: transparent;
+    border: 1.5px solid var(--line);
+    color: var(--ink-soft);
+    font-family: "Zen Kaku Gothic New", sans-serif;
+    font-weight: 700;
+    font-size: 13.5px;
+  }
+  .btn-secondary:hover { border-color: var(--magenta); color: var(--magenta); }
+
+  .footnote { font-size: 11.5px; color: var(--ink-soft); text-align: center; padding: 4px 8px; }
+
+  @media print {
+    .no-print { display: none !important; }
+    body { background: #fff; }
+  }
+</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@500;700;900&amp;family=Noto+Sans+JP:wght@400;500;700&amp;display=swap">
+</head>
+<body>
+
+<div class="page">
+  <div class="deco deco-a" aria-hidden="true"></div>
+  <div class="deco deco-b" aria-hidden="true"></div>
+
+  <div class="wrap">
+    <header class="hero">
+      <span class="eyebrow">個別相談 参加者限定特典</span>
+      <h1>AIツールの選び方</h1>
+      <p class="subtitle">流行に左右されない、普遍の5基準チェックリスト</p>
+      <p class="lead">新しいAIツールが次々出てくるからこそ、毎回いちから悩まなくていいように。気になるツールを見つけたら、この5つを確認してみてください。</p>
+      <div class="pills">
+        <span class="pill">所要 1分</span>
+        <span class="pill">何度でも使える</span>
+        <span class="pill">流行に左右されない</span>
+      </div>
+    </header>
+
+    <div class="progress-card">
+      <div class="progress-top">
+        <span class="progress-label">チェック済み</span>
+        <span class="progress-count"><span id="doneCount">0</span> / 5</span>
+      </div>
+      <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+      <p class="progress-msg" id="progressMsg">気になるツールが出てきたら、上から順にチェックしてみてください。</p>
+    </div>
+
+    <div class="list" id="list"></div>
+
+    <div class="actions-row no-print">
+      <button class="btn-primary" id="printBtn" type="button">保存・印刷する</button>
+      <button class="btn-secondary" id="resetBtn" type="button">チェックをリセット</button>
+    </div>
+
+    <p class="footnote">チェック状況は、あなたのブラウザにのみ保存されます。どこにも送信されません。</p>
+  </div>
+</div>
+
+<script>
+(function () {
+  var STORAGE_KEY = "gramhack_ai_tool_checklist_v1";
+
+  var items = [
+    {
+      title: "目的が、自分の言葉で言える",
+      desc: "「時短のため」「アイデア出しのため」など、何に使うかを説明できるか。目的があいまいなまま始めたツールは、たいてい続きません。"
+    },
+    {
+      title: "無料または低コストで、まず試せる",
+      desc: "高額な契約をする前に、無料プランやお試し期間で使い心地を確かめられるか。"
+    },
+    {
+      title: "3ステップ以内で、やりたいことができる",
+      desc: "説明書を読み込まなくても、なんとなく操作がわかるか。複雑すぎるツールは、結局開かなくなります。"
+    },
+    {
+      title: "困ったときに、日本語で調べられる",
+      desc: "使い方や不具合で困ったとき、日本語の解説や質問できる場所があるか。"
+    },
+    {
+      title: "やめたいときに、すぐやめられる",
+      desc: "定期契約に縛られず、必要なくなったらすぐ解約・削除できるか。"
+    }
+  ];
+
+  function loadChecked() {
+    try {
+      var raw = localStorage.getItem(STORAGE_KEY);
+      return raw ? JSON.parse(raw) : {};
+    } catch (e) {
+      return {};
+    }
+  }
+  function saveChecked(checked) {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(checked)); } catch (e) {}
+  }
+
+  var checked = loadChecked();
+
+  function renderList() {
+    var mount = document.getElementById("list");
+    var html = "";
+    items.forEach(function (item, i) {
+      var isChecked = !!checked[i];
+      html += '<button class="check-item' + (isChecked ? " is-checked" : "") + '" type="button" data-i="' + i + '">';
+      html += '<span class="check-circle">' + (isChecked ? "&#10003;" : "") + "</span>";
+      html += '<span><p class="check-num">CHECK ' + (i + 1) + '</p><p class="check-title">' + item.title + '</p><p class="check-desc">' + item.desc + "</p></span>";
+      html += "</button>";
+    });
+    mount.innerHTML = html;
+
+    mount.querySelectorAll(".check-item").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var i = btn.getAttribute("data-i");
+        checked[i] = !checked[i];
+        saveChecked(checked);
+        renderList();
+        renderProgress();
+      });
+    });
+  }
+
+  function renderProgress() {
+    var count = items.reduce(function (sum, _, i) { return sum + (checked[i] ? 1 : 0); }, 0);
+    document.getElementById("doneCount").textContent = count;
+    document.getElementById("progressFill").style.width = (count / items.length) * 100 + "%";
+
+    var msg = document.getElementById("progressMsg");
+    if (count === 0) {
+      msg.textContent = "気になるツールが出てきたら、上から順にチェックしてみてください。";
+      msg.classList.remove("is-complete");
+    } else if (count === items.length) {
+      msg.textContent = "5つとも確認できました。この基準で選べば、流行に振り回されません。";
+      msg.classList.add("is-complete");
+    } else {
+      msg.textContent = "あと" + (items.length - count) + "個です。";
+      msg.classList.remove("is-complete");
+    }
+  }
+
+  renderList();
+  renderProgress();
+
+  document.getElementById("printBtn").addEventListener("click", function () {
+    window.print();
+  });
+
+  document.getElementById("resetBtn").addEventListener("click", function () {
+    if (!confirm("チェックをすべてリセットします。よろしいですか？")) return;
+    checked = {};
+    try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
+    renderList();
+    renderProgress();
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>行動に変えるシート</title>
+<style>
+  :root {
+    --paper: #fffaf6;
+    --ink: #34172f;
+    --ink-soft: #7a5a71;
+    --line: #f1d9e4;
+    --pink: #ff59a0;
+    --magenta: #d81e8f;
+    --sky: #2fb8e0;
+    --pink-pale: #fce5ed;
+    --sky-pale: #e2f6fb;
+    --card: #ffffff;
+    --grad: linear-gradient(90deg, var(--pink) 0%, var(--magenta) 52%, var(--sky) 100%);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    overflow-x: hidden;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "Noto Sans JP", "Hiragino Sans", sans-serif;
+    line-height: 1.75;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3 {
+    font-family: "Zen Kaku Gothic New", "Hiragino Sans", sans-serif;
+    font-weight: 700;
+    text-wrap: balance;
+    margin: 0;
+    color: var(--ink);
+  }
+
+  .page {
+    position: relative;
+    padding: 40px 16px 72px;
+  }
+
+  .deco {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(2px);
+    pointer-events: none;
+    opacity: 0.3;
+  }
+  .deco-a { width: 300px; height: 300px; top: -140px; left: -120px; background: radial-gradient(circle at 30% 30%, var(--pink), transparent 70%); }
+  .deco-b { width: 280px; height: 280px; bottom: -120px; right: -100px; background: radial-gradient(circle at 70% 70%, var(--sky), transparent 70%); }
+
+  .wrap { max-width: 620px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
+
+  .eyebrow {
+    display: inline-flex;
+    align-self: flex-start;
+    padding: 6px 14px;
+    border-radius: 999px;
+    background: var(--pink-pale);
+    color: var(--magenta);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+  }
+
+  header.hero {
+    background: var(--card);
+    border-radius: 28px;
+    box-shadow: 0 18px 48px -28px rgba(52, 23, 47, 0.28);
+    padding: 32px clamp(18px, 5vw, 36px) 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  h1 { font-size: clamp(24px, 6vw, 30px); }
+  .lead { color: var(--ink-soft); font-size: 14px; margin: 0; max-width: 46ch; word-break: keep-all; overflow-wrap: anywhere; }
+
+  .pills { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+  .pill {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--magenta);
+    background: var(--pink-pale);
+    border-radius: 999px;
+    padding: 6px 12px;
+  }
+
+  .progress-card {
+    position: sticky;
+    top: 12px;
+    z-index: 5;
+    background: var(--card);
+    border-radius: 20px;
+    box-shadow: 0 14px 34px -22px rgba(52, 23, 47, 0.3);
+    padding: 16px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .progress-top { display: flex; align-items: baseline; justify-content: space-between; }
+  .progress-label { font-size: 12px; font-weight: 700; color: var(--ink-soft); letter-spacing: 0.04em; }
+  .progress-pct { font-family: "Zen Kaku Gothic New", "Hiragino Sans", sans-serif; font-weight: 700; font-size: 26px; color: var(--magenta); font-variant-numeric: tabular-nums; }
+  .progress-pct span { font-size: 14px; }
+  .progress-track { height: 10px; border-radius: 999px; background: var(--pink-pale); overflow: hidden; }
+  .progress-fill { height: 100%; border-radius: 999px; background: var(--grad); transition: width 0.3s ease; }
+  .progress-sub { font-size: 12px; color: var(--ink-soft); }
+
+  .card {
+    background: var(--card);
+    border-radius: 24px;
+    box-shadow: 0 16px 40px -28px rgba(52, 23, 47, 0.26);
+    padding: 26px clamp(18px, 5vw, 32px) 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .step-head { display: flex; align-items: flex-start; gap: 12px; }
+  .step-num {
+    flex: none;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: var(--grad);
+    color: #fff;
+    font-family: "Zen Kaku Gothic New", "Hiragino Sans", sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .step-title { font-size: 18px; font-family: "Zen Kaku Gothic New", "Hiragino Sans", sans-serif; font-weight: 700; }
+  .step-sub { font-size: 13px; color: var(--ink-soft); margin: 2px 0 0; }
+
+  .field { display: flex; flex-direction: column; gap: 6px; }
+  .field label { font-size: 13px; font-weight: 700; color: var(--ink); }
+  .field .hint { font-size: 12px; color: var(--ink-soft); margin: -2px 0 2px; }
+  textarea, input[type="text"], input[type="date"] {
+    width: 100%;
+    font-family: inherit;
+    font-size: 14px;
+    color: var(--ink);
+    background: var(--paper);
+    border: 1.5px solid var(--line);
+    border-radius: 12px;
+    padding: 10px 12px;
+    resize: vertical;
+  }
+  textarea { min-height: 68px; }
+  textarea:focus, input:focus { outline: none; border-color: var(--pink); }
+
+  .chip-row { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip {
+    appearance: none;
+    cursor: pointer;
+    border: 1.5px solid var(--line);
+    background: var(--paper);
+    color: var(--ink);
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 8px 14px;
+    border-radius: 999px;
+    transition: border-color 0.15s ease, background 0.15s ease, color 0.15s ease;
+  }
+  .chip:hover { border-color: var(--pink); }
+  .chip.is-active {
+    background: var(--grad);
+    border-color: transparent;
+    color: #fff;
+  }
+
+  .note-box {
+    background: var(--pink-pale);
+    border-radius: 14px;
+    padding: 12px 14px;
+    font-size: 12.5px;
+    color: var(--ink);
+  }
+
+  .action-block {
+    border: 1.5px dashed var(--line);
+    border-radius: 16px;
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .action-label { font-size: 11px; font-weight: 700; color: var(--magenta); letter-spacing: 0.08em; }
+  .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  @media (max-width: 420px) { .action-grid { grid-template-columns: 1fr; } }
+
+  .roadmap { display: flex; flex-direction: column; }
+  .rm-item { display: flex; gap: 12px; position: relative; padding-bottom: 20px; }
+  .rm-item:last-child { padding-bottom: 0; }
+  .rm-line {
+    position: absolute;
+    left: 13px;
+    top: 28px;
+    bottom: 0;
+    width: 2px;
+    background: var(--line);
+  }
+  .rm-item:last-child .rm-line { display: none; }
+  .rm-dot {
+    flex: none;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 2px solid var(--line);
+    background: var(--card);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--ink-soft);
+    z-index: 1;
+  }
+  .rm-item.is-done .rm-dot { background: #2f7a3d; border-color: #2f7a3d; color: #fff; }
+  .rm-item.is-current .rm-dot { border-color: var(--magenta); color: var(--magenta); background: #fff; }
+  .rm-body { display: flex; flex-direction: column; gap: 2px; padding-top: 2px; }
+  .rm-title-row { display: flex; align-items: center; gap: 8px; }
+  .rm-title { font-size: 14px; font-weight: 700; }
+  .rm-item.is-future .rm-title, .rm-item.is-future .rm-desc { color: var(--ink-soft); }
+  .rm-badge { font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 999px; letter-spacing: 0.03em; }
+  .rm-item.is-done .rm-badge { background: #e8f3e6; color: #2f7a3d; }
+  .rm-item.is-current .rm-badge { background: var(--pink-pale); color: var(--magenta); }
+  .rm-desc { font-size: 12.5px; color: var(--ink-soft); margin: 0; }
+
+  .result-card {
+    background: var(--grad);
+    border-radius: 24px;
+    padding: 28px clamp(18px, 5vw, 32px) 30px;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .result-eyebrow { color: #fff; font-size: 11px; font-weight: 700; letter-spacing: 0.14em; opacity: 0.85; }
+  .result-headline { color: #fff; font-family: "Zen Kaku Gothic New", "Hiragino Sans", sans-serif; font-weight: 700; font-size: clamp(20px, 5vw, 25px); text-wrap: balance; }
+  .result-body { color: #fff; font-size: 13.5px; line-height: 1.8; opacity: 0.96; }
+  .result-body p { margin: 0 0 10px; }
+  .result-body p:last-child { margin-bottom: 0; }
+
+  .actions-row { display: flex; gap: 10px; flex-wrap: wrap; }
+  .btn-primary {
+    appearance: none;
+    border: none;
+    cursor: pointer;
+    padding: 14px 22px;
+    border-radius: 999px;
+    background: var(--grad);
+    color: #fff;
+    font-family: "Zen Kaku Gothic New", "Hiragino Sans", sans-serif;
+    font-weight: 700;
+    font-size: 14.5px;
+    box-shadow: 0 12px 24px -12px rgba(216, 30, 143, 0.5);
+  }
+  .btn-secondary {
+    appearance: none;
+    cursor: pointer;
+    padding: 12px 20px;
+    border-radius: 999px;
+    background: transparent;
+    border: 1.5px solid var(--line);
+    color: var(--ink-soft);
+    font-family: "Zen Kaku Gothic New", "Hiragino Sans", sans-serif;
+    font-weight: 700;
+    font-size: 13.5px;
+  }
+  .btn-secondary:hover { border-color: var(--magenta); color: var(--magenta); }
+
+  .footnote { font-size: 11.5px; color: var(--ink-soft); text-align: center; padding: 4px 8px; }
+
+  @media print {
+    .no-print { display: none !important; }
+    .progress-card { position: static; }
+    body { background: #fff; }
+  }
+</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@500;700;900&amp;family=Noto+Sans+JP:wght@400;500;700&amp;display=swap">
+</head>
+<body>
+
+<div class="page">
+  <div class="deco deco-a" aria-hidden="true"></div>
+  <div class="deco deco-b" aria-hidden="true"></div>
+
+  <div class="wrap">
+    <header class="hero">
+      <span class="eyebrow">NEXT STEP SHEET</span>
+      <h1>今日決めたことを、行動に変えるシート</h1>
+      <p class="lead">個別相談でお話しした内容を、あなた自身の言葉で<span style="white-space:nowrap">書き出します</span>。<br>書き終わると、ゴールまでの現在地が出ます。</p>
+      <div class="pills">
+        <span class="pill">所要 5分</span>
+        <span class="pill">相談当日に記入</span>
+        <span class="pill">書き直し自由</span>
+      </div>
+    </header>
+
+    <div class="progress-card">
+      <div class="progress-top">
+        <span class="progress-label">ゴールまでの現在地</span>
+        <span class="progress-pct" id="progressPct">25<span>%</span></span>
+      </div>
+      <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:25%"></div></div>
+      <p class="progress-sub"><span id="progressDoneCount">2</span> / 8 ステップ完了</p>
+    </div>
+
+    <section class="card">
+      <div class="step-head">
+        <span class="step-num">1</span>
+        <div>
+          <h2 class="step-title">今日、いちばん腑に落ちたこと</h2>
+          <p class="step-sub">担当者の話で「これだ」と思った一言を</p>
+        </div>
+      </div>
+      <div class="field">
+        <label for="q1a">担当者に言われて、いちばん刺さった言葉</label>
+        <textarea id="q1a" placeholder="例：フォロワーを増やすより先に、1件の実績をつくるほうが早いと言われたこと"></textarea>
+      </div>
+      <div class="field">
+        <label for="q1b">自分の強みだと言われたこと</label>
+        <textarea id="q1b" placeholder="例：前職の接客経験は、クライアントとのやりとりでそのまま活きる"></textarea>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="step-head">
+        <span class="step-num">2</span>
+        <div>
+          <h2 class="step-title">ゴールを決める</h2>
+          <p class="step-sub">いつまでに・いくら・なぜを言葉にする</p>
+        </div>
+      </div>
+      <div class="field">
+        <label>いつまでに</label>
+        <div class="chip-row" data-group="when">
+          <button class="chip" type="button" data-value="1か月後">1か月後</button>
+          <button class="chip" type="button" data-value="3か月後">3か月後</button>
+          <button class="chip" type="button" data-value="6か月後">6か月後</button>
+          <button class="chip" type="button" data-value="1年後">1年後</button>
+        </div>
+      </div>
+      <div class="field">
+        <label>月いくら</label>
+        <div class="chip-row" data-group="amount">
+          <button class="chip" type="button" data-value="1万〜3万円">1万〜3万円</button>
+          <button class="chip" type="button" data-value="3万〜5万円">3万〜5万円</button>
+          <button class="chip" type="button" data-value="5万〜10万円">5万〜10万円</button>
+          <button class="chip" type="button" data-value="10万〜30万円">10万〜30万円</button>
+          <button class="chip" type="button" data-value="30万円以上">30万円以上</button>
+        </div>
+      </div>
+      <div class="field">
+        <label for="q2c">そのお金で、何をしたいですか</label>
+        <textarea id="q2c" placeholder="例：子どもの習い事を我慢させずに済むようにしたい。平日に有給を取らなくても保育園のお迎えに行きたい。"></textarea>
+        <p class="note-box">金額より、この理由のほうが続ける力になります。</p>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="step-head">
+        <span class="step-num">3</span>
+        <div>
+          <h2 class="step-title">最初の3アクション</h2>
+          <p class="step-sub">今日から2週間以内にやることだけ</p>
+        </div>
+      </div>
+
+      <div class="action-block">
+        <span class="action-label">ACTION 01</span>
+        <div class="field"><input type="text" id="a1text" placeholder="例：講座のSTEP1〜3を見終える"></div>
+        <div class="action-grid">
+          <input type="date" id="a1date">
+          <input type="text" id="a1time" placeholder="例：平日21時以降・寝かしつけの後">
+        </div>
+      </div>
+
+      <div class="action-block">
+        <span class="action-label">ACTION 02</span>
+        <div class="field"><input type="text" id="a2text" placeholder="例：自分のアカウントの投稿を1本つくってみる"></div>
+        <div class="action-grid">
+          <input type="date" id="a2date">
+          <input type="text" id="a2time" placeholder="例：土曜の午前中">
+        </div>
+      </div>
+
+      <div class="action-block">
+        <span class="action-label">ACTION 03</span>
+        <div class="field"><input type="text" id="a3text" placeholder="例：わからないところをまとめて質問する"></div>
+        <div class="action-grid">
+          <input type="date" id="a3date">
+          <input type="text" id="a3time" placeholder="例：平日の隙間時間">
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="step-head">
+        <span class="step-num">4</span>
+        <div>
+          <h2 class="step-title">つまずきそうなところ</h2>
+          <p class="step-sub">先に言葉にしておくと、実際に止まりにくくなります</p>
+        </div>
+      </div>
+      <div class="field">
+        <label>たぶん、ここで止まる</label>
+        <div class="chip-row" data-group="blocker">
+          <button class="chip" type="button" data-value="時間が取れない（仕事や家事・育児で）">時間が取れない（仕事や家事・育児で）</button>
+          <button class="chip" type="button" data-value="何からやればいいかわからなくなる">何からやればいいかわからなくなる</button>
+          <button class="chip" type="button" data-value="ひとりだと続ける自信がない">ひとりだと続ける自信がない</button>
+          <button class="chip" type="button" data-value="過去にも似たことで挫折した経験がある">過去にも似たことで挫折した経験がある</button>
+        </div>
+        <textarea id="q4a" placeholder="当てはまるものがなければ、自分の言葉で書いてみてください"></textarea>
+      </div>
+      <div class="field">
+        <label for="q4b">そうなったら、どうする</label>
+        <textarea id="q4b" placeholder="例：その日のうちに、5分だけでも手をつける。完璧を目指さず、今日できた分だけ進める。"></textarea>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="step-head">
+        <span class="step-num">5</span>
+        <div>
+          <h2 class="step-title">あなたのロードマップ</h2>
+          <p class="step-sub">0→1収益化までの全8ステップ</p>
+        </div>
+      </div>
+      <div class="roadmap" id="roadmap"></div>
+    </section>
+
+    <section class="result-card">
+      <span class="result-eyebrow">TODAY'S RESULT</span>
+      <h2 class="result-headline" id="resultHeadline">まずは、STEP1から書き始めてみましょう。</h2>
+      <div class="result-body" id="resultBody"><p>書き終えると、ここにあなた専用のまとめが表示されます。</p></div>
+    </section>
+
+    <div class="actions-row no-print">
+      <button class="btn-primary" id="printBtn" type="button">このシートを保存・印刷</button>
+      <button class="btn-secondary" id="clearBtn" type="button">入力をクリア</button>
+    </div>
+
+    <p class="footnote">このシートの記入内容は、あなたのブラウザにのみ保存されます。どこにも送信されません。</p>
+  </div>
+</div>
+
+<script>
+(function () {
+  var STORAGE_KEY = "gramhack_next_step_sheet_v1";
+
+  var roadmapSteps = [
+    { title: "仕組みを知る", desc: "勉強会で、収益化の全体像をつかむ", auto: true },
+    { title: "自分の現在地を知る", desc: "個別相談で、あなたに合うルートを確認する", auto: true },
+    { title: "ゴールを決める", desc: "いつまでに・いくら・なぜを言葉にする", checkKey: "step2" },
+    { title: "最初の3アクションを決める", desc: "2週間以内にやることを日付で押さえる", checkKey: "step3" },
+    { title: "学習を始める", desc: "決めた順番どおりに手を動かす" },
+    { title: "見せられるものを作る", desc: "提案に使える実物を1つ用意する" },
+    { title: "はじめての提案を送る", desc: "1件目に声をかける" },
+    { title: "はじめての案件を獲得する", desc: "0→1が完了" }
+  ];
+
+  var textFieldIds = ["q1a", "q1b", "q2c", "a1text", "a1date", "a1time", "a2text", "a2date", "a2time", "a3text", "a3date", "a3time", "q4a", "q4b"];
+  var chipGroups = ["when", "amount", "blocker"];
+
+  function loadState() {
+    try {
+      var raw = localStorage.getItem(STORAGE_KEY);
+      return raw ? JSON.parse(raw) : {};
+    } catch (e) {
+      return {};
+    }
+  }
+
+  function saveState(state) {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    } catch (e) {}
+  }
+
+  var state = loadState();
+
+  function getFieldVal(id) {
+    var el = document.getElementById(id);
+    return el ? el.value.trim() : "";
+  }
+
+  function restoreFields() {
+    textFieldIds.forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el && state[id]) el.value = state[id];
+    });
+    chipGroups.forEach(function (group) {
+      if (state[group]) {
+        var btn = document.querySelector('.chip[data-group="' + group + '"]');
+      }
+    });
+    chipGroups.forEach(function (group) {
+      if (!state[group]) return;
+      var chips = document.querySelectorAll('.chip-row[data-group="' + group + '"] .chip');
+      chips.forEach(function (chip) {
+        if (chip.getAttribute("data-value") === state[group]) chip.classList.add("is-active");
+      });
+    });
+  }
+
+  function bindTextFields() {
+    textFieldIds.forEach(function (id) {
+      var el = document.getElementById(id);
+      if (!el) return;
+      el.addEventListener("input", function () {
+        state[id] = el.value;
+        saveState(state);
+        render();
+      });
+    });
+  }
+
+  function bindChips() {
+    chipGroups.forEach(function (group) {
+      var row = document.querySelector('.chip-row[data-group="' + group + '"]');
+      if (!row) return;
+      row.querySelectorAll(".chip").forEach(function (chip) {
+        chip.addEventListener("click", function () {
+          var already = chip.classList.contains("is-active");
+          row.querySelectorAll(".chip").forEach(function (c) { c.classList.remove("is-active"); });
+          if (!already) {
+            chip.classList.add("is-active");
+            state[group] = chip.getAttribute("data-value");
+          } else {
+            delete state[group];
+          }
+          saveState(state);
+          render();
+        });
+      });
+    });
+  }
+
+  function isFilled(id) { return !!(state[id] && state[id].trim()); }
+
+  function step2Done() {
+    return !!state.when && !!state.amount && isFilled("q2c");
+  }
+  function step3Done() {
+    return isFilled("a1text") && isFilled("a2text") && isFilled("a3text");
+  }
+
+  function renderRoadmap() {
+    var mount = document.getElementById("roadmap");
+    var doneCount = 0;
+    var reachedCurrent = false;
+    var html = "";
+    roadmapSteps.forEach(function (step, i) {
+      var done = step.auto || (step.checkKey === "step2" && step2Done()) || (step.checkKey === "step3" && step3Done());
+      var status = "future";
+      if (done) { status = "done"; doneCount++; }
+      html += '<div class="rm-item is-' + status + '">';
+      html += '<div class="rm-line"></div>';
+      html += '<div class="rm-dot">' + (done ? "&#10003;" : (i + 1)) + "</div>";
+      html += '<div class="rm-body">';
+      html += '<div class="rm-title-row"><span class="rm-title">' + step.title + "</span>";
+      if (done) html += '<span class="rm-badge">完了</span>';
+      html += "</div>";
+      html += '<p class="rm-desc">' + step.desc + "</p>";
+      html += "</div></div>";
+    });
+    mount.innerHTML = html;
+
+    var currentIndex = doneCount < roadmapSteps.length ? doneCount : roadmapSteps.length - 1;
+    var items = mount.querySelectorAll(".rm-item");
+    if (items[currentIndex] && !items[currentIndex].classList.contains("is-done")) {
+      items[currentIndex].classList.remove("is-future");
+      items[currentIndex].classList.add("is-current");
+      var badge = document.createElement("span");
+      badge.className = "rm-badge";
+      badge.textContent = "いまここ";
+      items[currentIndex].querySelector(".rm-title-row").appendChild(badge);
+    }
+
+    var pct = Math.round((doneCount / roadmapSteps.length) * 100);
+    document.getElementById("progressPct").innerHTML = pct + "<span>%</span>";
+    document.getElementById("progressFill").style.width = pct + "%";
+    document.getElementById("progressDoneCount").textContent = doneCount;
+
+    return doneCount;
+  }
+
+  function renderResult(doneCount) {
+    var headline = document.getElementById("resultHeadline");
+    var body = document.getElementById("resultBody");
+    var remaining = roadmapSteps.length - doneCount;
+
+    if (doneCount <= 2) {
+      headline.textContent = "まずは、STEP1から書き始めてみましょう。";
+      body.innerHTML = "<p>書き終えると、ここにあなた専用のまとめが表示されます。</p>";
+      return;
+    }
+
+    var lines = [];
+    if (state.when && state.amount) {
+      lines.push(state.when + "に月" + state.amount + "。");
+    } else if (state.when || state.amount) {
+      lines.push((state.when || "") + (state.amount || "") + "を目指します。");
+    }
+    if (step3Done()) {
+      lines.push("そこに向けた最初の3手が、日付まで決まりました。");
+    }
+    if (isFilled("q4a") || state.blocker) {
+      lines.push("いちばん多い失敗は「順番が決まらないまま止まること」です。あなたはもう、そこを超えています。");
+    }
+
+    headline.textContent = "ゴールまで、あと" + remaining + "ステップ。";
+    body.innerHTML = lines.length
+      ? lines.map(function (l) { return "<p>" + l + "</p>"; }).join("")
+      : "<p>STEP2〜4を書き終えると、あなた専用のまとめがここに出ます。</p>";
+  }
+
+  function render() {
+    var doneCount = renderRoadmap();
+    renderResult(doneCount);
+  }
+
+  restoreFields();
+  bindTextFields();
+  bindChips();
+  render();
+
+  document.getElementById("printBtn").addEventListener("click", function () {
+    window.print();
+  });
+
+  document.getElementById("clearBtn").addEventListener("click", function () {
+    if (!confirm("入力内容をすべて消去します。よろしいですか？")) return;
+    state = {};
+    try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
+    textFieldIds.forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el) el.value = "";
+    });
+    document.querySelectorAll(".chip.is-active").forEach(function (c) { c.classList.remove("is-active"); });
+    render();
+  });
+})();
+</script>
+</body>
+</html>

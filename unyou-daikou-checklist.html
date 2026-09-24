@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>運用代行スタート準備チェックリスト</title>
+<style>
+  :root {
+    --paper: #fffaf6;
+    --ink: #34172f;
+    --ink-soft: #7a5a71;
+    --line: #f1d9e4;
+    --pink: #ff59a0;
+    --magenta: #d81e8f;
+    --sky: #2fb8e0;
+    --pink-pale: #fce5ed;
+    --card: #ffffff;
+    --grad: linear-gradient(90deg, var(--pink) 0%, var(--magenta) 52%, var(--sky) 100%);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    overflow-x: hidden;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "Noto Sans JP", "Hiragino Sans", sans-serif;
+    line-height: 1.75;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3 {
+    font-family: "Zen Kaku Gothic New", "Hiragino Sans", sans-serif;
+    font-weight: 700;
+    text-wrap: balance;
+    margin: 0;
+    color: var(--ink);
+  }
+
+  .page { position: relative; padding: 40px 16px 72px; }
+
+  .deco {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(2px);
+    pointer-events: none;
+    opacity: 0.3;
+  }
+  .deco-a { width: 300px; height: 300px; top: -140px; left: -120px; background: radial-gradient(circle at 30% 30%, var(--pink), transparent 70%); }
+  .deco-b { width: 280px; height: 280px; bottom: -120px; right: -100px; background: radial-gradient(circle at 70% 70%, var(--sky), transparent 70%); }
+
+  .wrap { max-width: 600px; margin: 0 auto; display: flex; flex-direction: column; gap: 18px; position: relative; }
+
+  .eyebrow {
+    display: inline-flex;
+    align-self: flex-start;
+    padding: 6px 14px;
+    border-radius: 999px;
+    background: var(--pink-pale);
+    color: var(--magenta);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+  }
+
+  header.hero {
+    background: var(--card);
+    border-radius: 28px;
+    box-shadow: 0 18px 48px -28px rgba(52, 23, 47, 0.28);
+    padding: 32px clamp(18px, 5vw, 36px) 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  h1 { font-size: clamp(24px, 6vw, 30px); }
+  .subtitle { color: var(--magenta); font-weight: 700; font-size: 14px; margin: -4px 0 0; word-break: keep-all; }
+  .lead { color: var(--ink-soft); font-size: 14px; margin: 0; max-width: 46ch; word-break: keep-all; overflow-wrap: anywhere; }
+
+  .pills { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+  .pill { font-size: 12px; font-weight: 700; color: var(--magenta); background: var(--pink-pale); border-radius: 999px; padding: 6px 12px; }
+
+  .progress-card {
+    background: var(--card);
+    border-radius: 20px;
+    box-shadow: 0 14px 34px -22px rgba(52, 23, 47, 0.3);
+    padding: 16px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .progress-top { display: flex; align-items: baseline; justify-content: space-between; }
+  .progress-label { font-size: 12px; font-weight: 700; color: var(--ink-soft); letter-spacing: 0.04em; }
+  .progress-count { font-family: "Zen Kaku Gothic New", sans-serif; font-weight: 700; font-size: 22px; color: var(--magenta); font-variant-numeric: tabular-nums; }
+  .progress-count span { font-size: 13px; color: var(--ink-soft); }
+  .progress-track { height: 10px; border-radius: 999px; background: var(--pink-pale); overflow: hidden; }
+  .progress-fill { height: 100%; border-radius: 999px; background: var(--grad); transition: width 0.3s ease; }
+  .progress-msg { font-size: 12.5px; color: var(--ink-soft); margin: 0; }
+  .progress-msg.is-complete { color: var(--magenta); font-weight: 700; }
+
+  .steps { display: flex; flex-direction: column; gap: 14px; }
+
+  .step-card {
+    background: var(--card);
+    border-radius: 20px;
+    box-shadow: 0 14px 32px -26px rgba(52, 23, 47, 0.28);
+    padding: 20px clamp(16px, 4vw, 24px) 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    border: 1.5px solid transparent;
+    transition: border-color 0.15s ease, background 0.15s ease;
+  }
+  .step-card.is-done { background: var(--pink-pale); }
+
+  .step-head-row { display: flex; align-items: center; gap: 10px; }
+  .step-badge {
+    flex: none;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: var(--grad);
+    color: #fff;
+    font-family: "Zen Kaku Gothic New", sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .step-title { font-size: 16px; font-weight: 700; }
+  .step-desc { font-size: 12.5px; color: var(--ink-soft); margin: -6px 0 0 40px; }
+
+  .sub-items { display: flex; flex-direction: column; gap: 4px; }
+  .sub-item {
+    appearance: none;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+    background: transparent;
+    border: none;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 8px 10px;
+    border-radius: 12px;
+    font-family: inherit;
+  }
+  .sub-item:hover { background: rgba(255, 255, 255, 0.6); }
+  .sub-check {
+    flex: none;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 2px solid var(--line);
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    color: transparent;
+    margin-top: 1px;
+  }
+  .sub-item.is-checked .sub-check { background: var(--grad); border-color: transparent; color: #fff; }
+  .sub-text { font-size: 13.5px; color: var(--ink); line-height: 1.6; }
+  .sub-item.is-checked .sub-text { color: var(--ink-soft); text-decoration: line-through; text-decoration-color: var(--line); text-decoration-thickness: 1.5px; }
+
+  .actions-row { display: flex; gap: 10px; flex-wrap: wrap; }
+  .btn-primary {
+    appearance: none;
+    border: none;
+    cursor: pointer;
+    padding: 14px 22px;
+    border-radius: 999px;
+    background: var(--grad);
+    color: #fff;
+    font-family: "Zen Kaku Gothic New", sans-serif;
+    font-weight: 700;
+    font-size: 14.5px;
+    box-shadow: 0 12px 24px -12px rgba(216, 30, 143, 0.5);
+  }
+  .btn-secondary {
+    appearance: none;
+    cursor: pointer;
+    padding: 12px 20px;
+    border-radius: 999px;
+    background: transparent;
+    border: 1.5px solid var(--line);
+    color: var(--ink-soft);
+    font-family: "Zen Kaku Gothic New", sans-serif;
+    font-weight: 700;
+    font-size: 13.5px;
+  }
+  .btn-secondary:hover { border-color: var(--magenta); color: var(--magenta); }
+
+  .footnote { font-size: 11.5px; color: var(--ink-soft); text-align: center; padding: 4px 8px; }
+
+  @media print {
+    .no-print { display: none !important; }
+    body { background: #fff; }
+  }
+
+  @media (max-width: 420px) {
+    .step-desc { margin-left: 0; }
+  }
+</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@500;700;900&amp;family=Noto+Sans+JP:wght@400;500;700&amp;display=swap">
+</head>
+<body>
+
+<div class="page">
+  <div class="deco deco-a" aria-hidden="true"></div>
+  <div class="deco deco-b" aria-hidden="true"></div>
+
+  <div class="wrap">
+    <header class="hero">
+      <span class="eyebrow">個別相談 参加者限定特典</span>
+      <h1>運用代行スタート準備</h1>
+      <p class="subtitle">未経験から、案件応募までの6ステップ</p>
+      <p class="lead">運用代行は、特別な資格もいりません。順番通りに準備を進めれば、経験ゼロから実際の案件応募まで進めます。</p>
+      <div class="pills">
+        <span class="pill">未経験でもOK</span>
+        <span class="pill">全6ステップ・12項目</span>
+        <span class="pill">順番通りでOK</span>
+      </div>
+    </header>
+
+    <div class="progress-card">
+      <div class="progress-top">
+        <span class="progress-label">準備の進み具合</span>
+        <span class="progress-count"><span id="doneCount">0</span> / 12</span>
+      </div>
+      <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+      <p class="progress-msg" id="progressMsg">まずはSTEP1から、ひとつずつ進めてみましょう。</p>
+    </div>
+
+    <div class="steps" id="steps"></div>
+
+    <div class="actions-row no-print">
+      <button class="btn-primary" id="printBtn" type="button">保存・印刷する</button>
+      <button class="btn-secondary" id="resetBtn" type="button">チェックをリセット</button>
+    </div>
+
+    <p class="footnote">チェック状況は、あなたのブラウザにのみ保存されます。どこにも送信されません。</p>
+  </div>
+</div>
+
+<script>
+(function () {
+  var STORAGE_KEY = "gramhack_unyoudaikou_checklist_v1";
+
+  var steps = [
+    {
+      title: "環境を整える",
+      items: [
+        "スマホでもパソコンでも、SNSにログインできる状態にしておく",
+        "1日15分でもいいので、作業する時間帯を決めておく"
+      ]
+    },
+    {
+      title: "基本の言葉に慣れる",
+      items: [
+        "「フィード」「リール」「ストーリーズ」の違いを、ひとことで言えるようにする",
+        "「保存数」「エンゲージメント」など、よく出てくる言葉を1つ覚える"
+      ]
+    },
+    {
+      title: "伸びてるアカウントを分析してみる",
+      items: [
+        "伸びているアカウントを1つ選んで、良いところを3つ書き出す",
+        "「ここをこうしたらもっと伸びそう」という点を、1つ考えてみる"
+      ]
+    },
+    {
+      title: "最初の1本を作ってみる",
+      items: [
+        "実際に見てもらいたい人を想定して、投稿を1本作ってみる",
+        "作ったものを、誰かに見せて感想をもらう"
+      ]
+    },
+    {
+      title: "営業の準備をする",
+      items: [
+        "自己紹介文を、短くてもいいので1つ用意する",
+        "「こんな人に頼みたい」と思われる自分の強みを、ひとことで言えるようにする"
+      ]
+    },
+    {
+      title: "実際に応募してみる",
+      items: [
+        "案件が載っている場所を、1つ探してみる（例：ママワークス、複業クラウド、indeedなど）",
+        "気になる案件に、実際に1件応募してみる"
+      ]
+    }
+  ];
+
+  var totalItems = steps.reduce(function (sum, s) { return sum + s.items.length; }, 0);
+
+  function loadChecked() {
+    try {
+      var raw = localStorage.getItem(STORAGE_KEY);
+      return raw ? JSON.parse(raw) : {};
+    } catch (e) {
+      return {};
+    }
+  }
+  function saveChecked(checked) {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(checked)); } catch (e) {}
+  }
+
+  var checked = loadChecked();
+
+  function keyFor(si, ii) { return si + "-" + ii; }
+
+  function stepDone(si) {
+    return steps[si].items.every(function (_, ii) { return !!checked[keyFor(si, ii)]; });
+  }
+
+  function renderSteps() {
+    var mount = document.getElementById("steps");
+    var html = "";
+    steps.forEach(function (step, si) {
+      var done = stepDone(si);
+      html += '<div class="step-card' + (done ? " is-done" : "") + '">';
+      html += '<div class="step-head-row"><span class="step-badge">' + (done ? "&#10003;" : (si + 1)) + '</span><h2 class="step-title">STEP' + (si + 1) + "　" + step.title + "</h2></div>";
+      html += '<div class="sub-items">';
+      step.items.forEach(function (text, ii) {
+        var isChecked = !!checked[keyFor(si, ii)];
+        html += '<button class="sub-item' + (isChecked ? " is-checked" : "") + '" type="button" data-si="' + si + '" data-ii="' + ii + '">';
+        html += '<span class="sub-check">' + (isChecked ? "&#10003;" : "") + "</span>";
+        html += '<span class="sub-text">' + text + "</span>";
+        html += "</button>";
+      });
+      html += "</div></div>";
+    });
+    mount.innerHTML = html;
+
+    mount.querySelectorAll(".sub-item").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var key = keyFor(btn.getAttribute("data-si"), btn.getAttribute("data-ii"));
+        checked[key] = !checked[key];
+        saveChecked(checked);
+        renderSteps();
+        renderProgress();
+      });
+    });
+  }
+
+  function renderProgress() {
+    var count = 0;
+    steps.forEach(function (step, si) {
+      step.items.forEach(function (_, ii) {
+        if (checked[keyFor(si, ii)]) count++;
+      });
+    });
+    document.getElementById("doneCount").textContent = count;
+    document.getElementById("progressFill").style.width = (count / totalItems) * 100 + "%";
+
+    var msg = document.getElementById("progressMsg");
+    if (count === 0) {
+      msg.textContent = "まずはSTEP1から、ひとつずつ進めてみましょう。";
+      msg.classList.remove("is-complete");
+    } else if (count === totalItems) {
+      msg.textContent = "ここまで来たら、もう立派な一歩目です。結果を待ちながら、次の案件にも挑戦してみましょう。";
+      msg.classList.add("is-complete");
+    } else {
+      msg.textContent = "あと" + (totalItems - count) + "個です。";
+      msg.classList.remove("is-complete");
+    }
+  }
+
+  renderSteps();
+  renderProgress();
+
+  document.getElementById("printBtn").addEventListener("click", function () {
+    window.print();
+  });
+
+  document.getElementById("resetBtn").addEventListener("click", function () {
+    if (!confirm("チェックをすべてリセットします。よろしいですか？")) return;
+    checked = {};
+    try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
+    renderSteps();
+    renderProgress();
+  });
+})();
+</script>
+</body>
+</html>
