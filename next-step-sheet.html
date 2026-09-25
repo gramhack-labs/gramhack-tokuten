@@ -195,6 +195,7 @@
   .action-label { font-size: 11px; font-weight: 700; color: var(--magenta); letter-spacing: 0.08em; }
   .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
   @media (max-width: 420px) { .action-grid { grid-template-columns: 1fr; } }
+  .mini-label { display: block; font-size: 11px; color: var(--ink-soft); margin: 0 0 4px; }
 
   .roadmap { display: flex; flex-direction: column; }
   .rm-item { display: flex; gap: 12px; position: relative; padding-bottom: 20px; }
@@ -379,8 +380,8 @@
         <span class="action-label">ACTION 01</span>
         <div class="field"><input type="text" id="a1text" placeholder="例：講座のSTEP1〜3を見終える"></div>
         <div class="action-grid">
-          <input type="date" id="a1date">
-          <input type="text" id="a1time" placeholder="例：平日21時以降・寝かしつけの後">
+          <div><span class="mini-label">いつやるか（日付）</span><input type="date" id="a1date"></div>
+          <div><span class="mini-label">何時ごろ</span><input type="text" id="a1time" placeholder="例：平日21時以降・寝かしつけの後"></div>
         </div>
       </div>
 
@@ -388,8 +389,8 @@
         <span class="action-label">ACTION 02</span>
         <div class="field"><input type="text" id="a2text" placeholder="例：自分のアカウントの投稿を1本つくってみる"></div>
         <div class="action-grid">
-          <input type="date" id="a2date">
-          <input type="text" id="a2time" placeholder="例：土曜の午前中">
+          <div><span class="mini-label">いつやるか（日付）</span><input type="date" id="a2date"></div>
+          <div><span class="mini-label">何時ごろ</span><input type="text" id="a2time" placeholder="例：土曜の午前中"></div>
         </div>
       </div>
 
@@ -397,8 +398,8 @@
         <span class="action-label">ACTION 03</span>
         <div class="field"><input type="text" id="a3text" placeholder="例：わからないところをまとめて質問する"></div>
         <div class="action-grid">
-          <input type="date" id="a3date">
-          <input type="text" id="a3time" placeholder="例：平日の隙間時間">
+          <div><span class="mini-label">いつやるか（日付）</span><input type="date" id="a3date"></div>
+          <div><span class="mini-label">何時ごろ</span><input type="text" id="a3time" placeholder="例：平日の隙間時間"></div>
         </div>
       </div>
     </section>
@@ -615,7 +616,7 @@
       lines.push("そこに向けた最初の3手が、日付まで決まりました。");
     }
     if (isFilled("q4a") || state.blocker) {
-      lines.push("いちばん多い失敗は「順番が決まらないまま止まること」です。あなたはもう、そこを超えています。");
+      lines.push("いちばんの落とし穴は「順番が決まらないまま止まること」ですが、ここまで書き出せていれば、その心配はなさそうです。");
     }
 
     headline.textContent = "ゴールまで、あと" + remaining + "ステップ。";
@@ -635,6 +636,12 @@
   render();
 
   document.getElementById("printBtn").addEventListener("click", function () {
+    var ua = navigator.userAgent || "";
+    var inApp = /Line\//i.test(ua) || /FBAN|FBAV/i.test(ua) || /Instagram/i.test(ua);
+    if (inApp) {
+      alert("このアプリ内ブラウザでは保存・印刷が開けない場合があります。\n右上の「…」または「⋮」メニューから「外部のブラウザで開く」を選んで、もう一度お試しください。");
+      return;
+    }
     window.print();
   });
 

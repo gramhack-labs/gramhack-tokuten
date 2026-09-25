@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>AIツールの選び方チェックリスト</title>
+<title>AIツールの選び方</title>
 <style>
   :root {
     --paper: #fffaf6;
@@ -86,88 +86,75 @@
   .pills { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
   .pill { font-size: 12px; font-weight: 700; color: var(--magenta); background: var(--pink-pale); border-radius: 999px; padding: 6px 12px; }
 
-  .progress-card {
-    background: var(--card);
-    border-radius: 20px;
-    box-shadow: 0 14px 34px -22px rgba(52, 23, 47, 0.3);
-    padding: 16px 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
+  .section-label {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--ink-soft);
+    letter-spacing: 0.04em;
+    padding: 4px 4px 0;
   }
-  .progress-top { display: flex; align-items: baseline; justify-content: space-between; }
-  .progress-label { font-size: 12px; font-weight: 700; color: var(--ink-soft); letter-spacing: 0.04em; }
-  .progress-count { font-family: "Zen Kaku Gothic New", sans-serif; font-weight: 700; font-size: 22px; color: var(--magenta); font-variant-numeric: tabular-nums; }
-  .progress-count span { font-size: 13px; color: var(--ink-soft); }
-  .progress-track { height: 10px; border-radius: 999px; background: var(--pink-pale); overflow: hidden; }
-  .progress-fill { height: 100%; border-radius: 999px; background: var(--grad); transition: width 0.3s ease; }
-  .progress-msg { font-size: 12.5px; color: var(--ink-soft); margin: 0; }
-  .progress-msg.is-complete { color: var(--magenta); font-weight: 700; }
 
-  .list { display: flex; flex-direction: column; gap: 12px; }
-
-  .check-item {
+  .scenario-list { display: flex; flex-direction: column; gap: 10px; }
+  .scenario-btn {
     appearance: none;
     width: 100%;
     text-align: left;
     cursor: pointer;
     background: var(--card);
     border: 1.5px solid var(--line);
-    border-radius: 18px;
-    padding: 16px 18px;
-    display: flex;
-    gap: 14px;
-    align-items: flex-start;
-    box-shadow: 0 14px 30px -26px rgba(52, 23, 47, 0.3);
-    transition: border-color 0.15s ease, background 0.15s ease;
-  }
-  .check-item:hover { border-color: var(--pink); }
-  .check-item.is-checked { border-color: transparent; background: var(--pink-pale); }
-
-  .check-circle {
-    flex: none;
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    border: 2px solid var(--line);
-    background: #fff;
+    border-radius: 16px;
+    padding: 14px 16px;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ink);
     display: flex;
     align-items: center;
-    justify-content: center;
-    font-size: 14px;
-    color: transparent;
-    margin-top: 1px;
+    justify-content: space-between;
+    gap: 10px;
+    box-shadow: 0 12px 26px -22px rgba(52, 23, 47, 0.3);
+    transition: border-color 0.15s ease, background 0.15s ease;
   }
-  .check-item.is-checked .check-circle {
-    background: var(--grad);
-    border-color: transparent;
-    color: #fff;
-  }
+  .scenario-btn:hover { border-color: var(--pink); }
+  .scenario-btn.is-active { border-color: transparent; background: var(--grad); color: #fff; }
+  .scenario-arrow { flex: none; font-size: 13px; opacity: 0.7; }
 
-  .check-num {
-    font-size: 11px;
-    font-weight: 700;
-    color: var(--magenta);
-    letter-spacing: 0.06em;
-    margin: 0 0 2px;
+  .result-card {
+    background: var(--card);
+    border-radius: 22px;
+    box-shadow: 0 18px 40px -26px rgba(52, 23, 47, 0.32);
+    padding: 22px clamp(18px, 5vw, 28px) 24px;
+    display: none;
+    flex-direction: column;
+    gap: 10px;
   }
-  .check-title { font-family: "Zen Kaku Gothic New", sans-serif; font-weight: 700; font-size: 15.5px; margin: 0 0 4px; }
-  .check-desc { font-size: 13px; color: var(--ink-soft); margin: 0; }
-
-  .actions-row { display: flex; gap: 10px; flex-wrap: wrap; }
-  .btn-primary {
-    appearance: none;
-    border: none;
-    cursor: pointer;
-    padding: 14px 22px;
+  .result-card.is-visible { display: flex; }
+  .result-eyebrow { font-size: 11px; font-weight: 700; color: var(--ink-soft); letter-spacing: 0.1em; }
+  .result-tool {
+    display: inline-flex;
+    align-self: flex-start;
+    padding: 7px 16px;
     border-radius: 999px;
     background: var(--grad);
     color: #fff;
     font-family: "Zen Kaku Gothic New", sans-serif;
     font-weight: 700;
-    font-size: 14.5px;
-    box-shadow: 0 12px 24px -12px rgba(216, 30, 143, 0.5);
+    font-size: 16px;
   }
+  .result-why { font-size: 14px; color: var(--ink); margin: 0; }
+  .result-tip { font-size: 12.5px; color: var(--ink-soft); background: var(--pink-pale); border-radius: 12px; padding: 10px 12px; margin: 0; }
+
+  .note-box {
+    background: var(--pink-pale);
+    border-radius: 16px;
+    padding: 14px 16px;
+    font-size: 12.5px;
+    color: var(--ink);
+    word-break: keep-all;
+    overflow-wrap: anywhere;
+  }
+
+  .actions-row { display: flex; gap: 10px; flex-wrap: wrap; }
   .btn-secondary {
     appearance: none;
     cursor: pointer;
@@ -201,130 +188,96 @@
     <header class="hero">
       <span class="eyebrow">個別相談 参加者限定特典</span>
       <h1>AIツールの選び方</h1>
-      <p class="subtitle">流行に左右されない、普遍の5基準チェックリスト</p>
-      <p class="lead">新しいAIツールが次々出てくるからこそ、毎回いちから悩まなくていいように。気になるツールを見つけたら、この5つを確認してみてください。</p>
+      <p class="subtitle">「今、何がしたいか」から、おすすめのAIツールがわかる</p>
+      <p class="lead">ツールの数が多すぎて迷ったら、まず「今やりたいこと」から選んでみてください。当てはまるものをタップすると、おすすめのツールが出てきます。</p>
       <div class="pills">
         <span class="pill">所要 1分</span>
         <span class="pill">何度でも使える</span>
-        <span class="pill">流行に左右されない</span>
+        <span class="pill">迷ったらここから</span>
       </div>
     </header>
 
-    <div class="progress-card">
-      <div class="progress-top">
-        <span class="progress-label">チェック済み</span>
-        <span class="progress-count"><span id="doneCount">0</span> / 5</span>
-      </div>
-      <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
-      <p class="progress-msg" id="progressMsg">気になるツールが出てきたら、上から順にチェックしてみてください。</p>
+    <p class="section-label">あなたは今、何をしたいですか？</p>
+
+    <div class="scenario-list" id="scenarioList"></div>
+
+    <div class="result-card" id="resultCard">
+      <span class="result-eyebrow">おすすめのツール</span>
+      <span class="result-tool" id="resultTool"></span>
+      <p class="result-why" id="resultWhy"></p>
+      <p class="result-tip" id="resultTip"></p>
     </div>
 
-    <div class="list" id="list"></div>
+    <div class="note-box">迷ったときの選び方の基準は、こちら → <strong>無料または低コストで試せるか／日本語で使えるか／説明書なしでも何となく使えるか</strong>。この3つを満たしていれば、まず試してみて大丈夫です。</div>
 
-    <div class="actions-row no-print">
-      <button class="btn-primary" id="printBtn" type="button">保存・印刷する</button>
-      <button class="btn-secondary" id="resetBtn" type="button">チェックをリセット</button>
-    </div>
-
-    <p class="footnote">チェック状況は、あなたのブラウザにのみ保存されます。どこにも送信されません。</p>
+    <p class="footnote">選んだ内容は、あなたのブラウザにのみ保存されます。どこにも送信されません。</p>
   </div>
 </div>
 
 <script>
 (function () {
-  var STORAGE_KEY = "gramhack_ai_tool_checklist_v1";
-
-  var items = [
+  var scenarios = [
     {
-      title: "目的が、自分の言葉で言える",
-      desc: "「時短のため」「アイデア出しのため」など、何に使うかを説明できるか。目的があいまいなまま始めたツールは、たいてい続きません。"
+      q: "投稿のキャプションや台本の文章を考えたい",
+      tool: "ChatGPT",
+      why: "伝えたいことを話しかけるように打ち込むだけで、文章のたたき台を出してくれます。",
+      tip: "使い方のコツ：出てきた文章をそのまま使わず、自分の言葉に少し直すと自然になります。"
     },
     {
-      title: "無料または低コストで、まず試せる",
-      desc: "高額な契約をする前に、無料プランやお試し期間で使い心地を確かめられるか。"
+      q: "画像やアイキャッチをサクッと作りたい",
+      tool: "Canva（AI機能つき）",
+      why: "テンプレートを選んで文字を入れ替えるだけで、それらしい画像が作れます。AIでの画像生成機能もあります。",
+      tip: "使い方のコツ：まずは近いテンプレートを探すところから始めると、迷わず形になります。"
     },
     {
-      title: "3ステップ以内で、やりたいことができる",
-      desc: "説明書を読み込まなくても、なんとなく操作がわかるか。複雑すぎるツールは、結局開かなくなります。"
+      q: "リールの構成・台本を考えたい",
+      tool: "ChatGPT",
+      why: "伸びている投稿の特徴を伝えると、構成案のたたき台を出してくれます。",
+      tip: "使い方のコツ：「初心者向けに」「3つのポイントで」など、条件を添えるとより使える案が出ます。"
     },
     {
-      title: "困ったときに、日本語で調べられる",
-      desc: "使い方や不具合で困ったとき、日本語の解説や質問できる場所があるか。"
+      q: "動画の編集を時短したい",
+      tool: "CapCut",
+      why: "字幕の自動生成やカット編集が、無料アプリだけで簡単にできます。",
+      tip: "使い方のコツ：まずはテンプレートを1つ使ってみると、操作の感覚がすぐにつかめます。"
     },
     {
-      title: "やめたいときに、すぐやめられる",
-      desc: "定期契約に縛られず、必要なくなったらすぐ解約・削除できるか。"
+      q: "営業・提案のメッセージ文を考えたい",
+      tool: "ChatGPT",
+      why: "相手のプロフィールや募集内容を伝えると、それに合わせた提案文のたたき台を出してくれます。",
+      tip: "使い方のコツ：うまくいった文面はテンプレとして残しておくと、次から時短になります。"
+    },
+    {
+      q: "伸びてるアカウントの理由を分析したい",
+      tool: "ChatGPT",
+      why: "「なぜこの投稿が伸びていると思う？」と聞きながら壁打ちすると、自分では気づけなかった視点が見えてきます。",
+      tip: "使い方のコツ：投稿の内容をテキストで説明してから聞くと、より具体的な答えが返ってきます。"
     }
   ];
 
-  function loadChecked() {
-    try {
-      var raw = localStorage.getItem(STORAGE_KEY);
-      return raw ? JSON.parse(raw) : {};
-    } catch (e) {
-      return {};
-    }
-  }
-  function saveChecked(checked) {
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(checked)); } catch (e) {}
-  }
+  var listEl = document.getElementById("scenarioList");
+  var resultCard = document.getElementById("resultCard");
+  var resultTool = document.getElementById("resultTool");
+  var resultWhy = document.getElementById("resultWhy");
+  var resultTip = document.getElementById("resultTip");
 
-  var checked = loadChecked();
-
-  function renderList() {
-    var mount = document.getElementById("list");
-    var html = "";
-    items.forEach(function (item, i) {
-      var isChecked = !!checked[i];
-      html += '<button class="check-item' + (isChecked ? " is-checked" : "") + '" type="button" data-i="' + i + '">';
-      html += '<span class="check-circle">' + (isChecked ? "&#10003;" : "") + "</span>";
-      html += '<span><p class="check-num">CHECK ' + (i + 1) + '</p><p class="check-title">' + item.title + '</p><p class="check-desc">' + item.desc + "</p></span>";
-      html += "</button>";
-    });
-    mount.innerHTML = html;
-
-    mount.querySelectorAll(".check-item").forEach(function (btn) {
-      btn.addEventListener("click", function () {
-        var i = btn.getAttribute("data-i");
-        checked[i] = !checked[i];
-        saveChecked(checked);
-        renderList();
-        renderProgress();
-      });
-    });
-  }
-
-  function renderProgress() {
-    var count = items.reduce(function (sum, _, i) { return sum + (checked[i] ? 1 : 0); }, 0);
-    document.getElementById("doneCount").textContent = count;
-    document.getElementById("progressFill").style.width = (count / items.length) * 100 + "%";
-
-    var msg = document.getElementById("progressMsg");
-    if (count === 0) {
-      msg.textContent = "気になるツールが出てきたら、上から順にチェックしてみてください。";
-      msg.classList.remove("is-complete");
-    } else if (count === items.length) {
-      msg.textContent = "5つとも確認できました。この基準で選べば、流行に振り回されません。";
-      msg.classList.add("is-complete");
-    } else {
-      msg.textContent = "あと" + (items.length - count) + "個です。";
-      msg.classList.remove("is-complete");
-    }
-  }
-
-  renderList();
-  renderProgress();
-
-  document.getElementById("printBtn").addEventListener("click", function () {
-    window.print();
+  var html = "";
+  scenarios.forEach(function (s, i) {
+    html += '<button class="scenario-btn" type="button" data-i="' + i + '"><span>' + s.q + '</span><span class="scenario-arrow">&#8594;</span></button>';
   });
+  listEl.innerHTML = html;
 
-  document.getElementById("resetBtn").addEventListener("click", function () {
-    if (!confirm("チェックをすべてリセットします。よろしいですか？")) return;
-    checked = {};
-    try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
-    renderList();
-    renderProgress();
+  listEl.querySelectorAll(".scenario-btn").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      listEl.querySelectorAll(".scenario-btn").forEach(function (b) { b.classList.remove("is-active"); });
+      btn.classList.add("is-active");
+      var s = scenarios[parseInt(btn.getAttribute("data-i"), 10)];
+      resultTool.textContent = s.tool;
+      resultWhy.textContent = s.why;
+      resultTip.textContent = s.tip;
+      resultCard.classList.add("is-visible");
+      resultCard.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    });
   });
 })();
 </script>

@@ -165,6 +165,36 @@
   .sub-text { font-size: 13.5px; color: var(--ink); line-height: 1.6; }
   .sub-item.is-checked .sub-text { color: var(--ink-soft); text-decoration: line-through; text-decoration-color: var(--line); text-decoration-thickness: 1.5px; }
 
+  .step-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    background: var(--pink-pale);
+    border-radius: 14px;
+    padding: 10px 12px;
+    font-size: 12px;
+    color: var(--ink);
+    margin: 2px 0 0 40px;
+    word-break: keep-all;
+    overflow-wrap: anywhere;
+  }
+  .step-note .note-icon { flex: none; }
+  @media (max-width: 420px) { .step-note { margin-left: 0; } }
+
+  .cta-card {
+    background: var(--grad);
+    border-radius: 24px;
+    padding: 26px clamp(18px, 5vw, 32px) 28px;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .cta-eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 0.12em; opacity: 0.9; }
+  .cta-title { color: #fff; font-family: "Zen Kaku Gothic New", sans-serif; font-weight: 700; font-size: clamp(18px, 5vw, 22px); }
+  .cta-body { font-size: 13.5px; line-height: 1.8; opacity: 0.97; margin: 0; word-break: keep-all; overflow-wrap: anywhere; }
+  .cta-list { margin: 4px 0 0; padding-left: 1.2em; font-size: 13px; line-height: 1.8; opacity: 0.97; word-break: keep-all; overflow-wrap: anywhere; }
+
   .actions-row { display: flex; gap: 10px; flex-wrap: wrap; }
   .btn-primary {
     appearance: none;
@@ -236,6 +266,18 @@
 
     <div class="steps" id="steps"></div>
 
+    <section class="cta-card">
+      <span class="cta-eyebrow">GRAMHACKに入ると</span>
+      <h2 class="cta-title">「できない！」を、一人で抱えなくてよくなります</h2>
+      <p class="cta-body">ここまで自力でやろうとすると、必ずどこかでつまずきます。それは普通のことです。GramHackでは、そのつまずきやすいポイントに、最初からサポートを用意しています。</p>
+      <ul class="cta-list">
+        <li>伸びてるアカウントをすぐ分析できる専用ツール</li>
+        <li>作った動画を講師が添削してくれる仕組み</li>
+        <li>営業用のポートフォリオ・提案文テンプレート</li>
+      </ul>
+      <p class="cta-body">迷ったときに聞ける環境があるだけで、進むスピードはまったく変わります。</p>
+    </section>
+
     <div class="actions-row no-print">
       <button class="btn-primary" id="printBtn" type="button">保存・印刷する</button>
       <button class="btn-secondary" id="resetBtn" type="button">チェックをリセット</button>
@@ -269,21 +311,24 @@
       items: [
         "伸びているアカウントを1つ選んで、良いところを3つ書き出す",
         "「ここをこうしたらもっと伸びそう」という点を、1つ考えてみる"
-      ]
+      ],
+      note: "「どういう指標で選べばいいの？」となったら要注意サイン。GramHackには伸びてるアカウントをすぐ分析できる専用ツールがあります。"
     },
     {
       title: "最初の1本を作ってみる",
       items: [
         "実際に見てもらいたい人を想定して、投稿を1本作ってみる",
         "作ったものを、誰かに見せて感想をもらう"
-      ]
+      ],
+      note: "「動画の作り方がそもそもわからない」となったら要注意サイン。GramHackでは作り方から講師の添削まで、仕組みで支えています。"
     },
     {
       title: "営業の準備をする",
       items: [
         "自己紹介文を、短くてもいいので1つ用意する",
         "「こんな人に頼みたい」と思われる自分の強みを、ひとことで言えるようにする"
-      ]
+      ],
+      note: "「何から書けばいいかわからない」となったら要注意サイン。GramHackには営業用のポートフォリオ・提案文テンプレートがあります。"
     },
     {
       title: "実際に応募してみる",
@@ -331,7 +376,11 @@
         html += '<span class="sub-text">' + text + "</span>";
         html += "</button>";
       });
-      html += "</div></div>";
+      html += "</div>";
+      if (step.note) {
+        html += '<div class="step-note"><span class="note-icon">&#128161;</span><span>' + step.note + "</span></div>";
+      }
+      html += "</div>";
     });
     mount.innerHTML = html;
 
@@ -373,6 +422,12 @@
   renderProgress();
 
   document.getElementById("printBtn").addEventListener("click", function () {
+    var ua = navigator.userAgent || "";
+    var inApp = /Line\//i.test(ua) || /FBAN|FBAV/i.test(ua) || /Instagram/i.test(ua);
+    if (inApp) {
+      alert("このアプリ内ブラウザでは保存・印刷が開けない場合があります。\n右上の「…」または「⋮」メニューから「外部のブラウザで開く」を選んで、もう一度お試しください。");
+      return;
+    }
     window.print();
   });
 
